@@ -24,3 +24,75 @@ export const getAllTask = async(userId)=>{
 
     return tasks
 }
+
+export const getSingleTask = async (taskId,userId)=>{
+    const task = await taskModel.findOne({
+        _id: taskId,
+        user: userId
+    })
+
+    return task
+}
+
+
+export const updateTask = async (taskId,userId,updateData)=>{
+    const task = await taskModel.findOneAndUpdate(
+        {
+            _id:taskId,
+            user:userId
+        },
+        updateData,
+        {
+            new:true,
+            runValidators:true
+        }
+    );
+
+    return task
+}
+
+export const updateTaskStatus = async(taskId,userId,status)=>{
+    const task = await taskModel.findOneAndUpdate(
+        {
+            _id:taskId,
+            user:userId
+        },
+        {
+            status:status
+        },
+        {  new: true,
+            runValidators: true
+        }
+    )
+
+    return task
+}
+
+export const deleteTask = async (taskId,userId)=>{
+    const task = await taskModel.findOneAndDelete({
+        _id:taskId,
+        user:userId
+    })
+
+    return task
+}
+
+
+export const filterTask = async(userId,status)=>{
+    const task = await taskModel.find({
+        user:userId,
+        status:status
+    });
+    return task
+}
+
+export const searchTask = async(userId,search)=>{
+    const task = await taskModel.find({
+        user:userId,
+        title:{
+            $regex:search,
+            $options:"i"
+        }
+    });
+    return task
+}
