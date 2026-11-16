@@ -1,4 +1,15 @@
-import { createTask, getAllTask, getSingleTask, updateTask, deleteTask, updateTaskStatus, filterTask, searchTask } from "./task.service.js";
+import { 
+    createTask,
+    getAllTask, 
+    getSingleTask, 
+    updateTask, 
+    deleteTask, 
+    updateTaskStatus, 
+    filterTask, 
+    searchTask,
+    getTaskStatus
+} from "./task.service.js";
+
 import mongoose from "mongoose";
 
 export const createTaskController = async (req, res) => {
@@ -160,7 +171,7 @@ export const updateTaskStatusController = async (req, res) => {
                 message: "Invalid Task ID"
             });
         }
-        const userId = req.user.Id
+        const userId = req.user.id
         const { status } = req.body
 
         const task = await updateTaskStatus(taskId, userId, status)
@@ -233,6 +244,26 @@ export const searchTaskController = async (req, res) => {
         });
     } catch (error) {
         return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
+
+
+export const getTaskStatusController = async (req,res)=>{
+    try {
+        const userId = req.user.id    
+
+    const status = await getTaskStatus(userId)
+
+    return res.status(200).json({
+        success: true,
+            message: "Task statistics fetched successfully",
+            status
+    })
+    } catch (error) {
+          return res.status(500).json({
             success: false,
             message: error.message
         });

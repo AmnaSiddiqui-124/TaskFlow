@@ -2,13 +2,14 @@ import taskModel from "./task.model.js";
 
 
 export const createTask = async (taskData, userId) => {
-    const { title, description, priority, dueDate } = taskData
+    const { title, description, priority, dueDate,status } = taskData
 
     const task = await taskModel.create({
         title,
         description,
         priority,
         dueDate,
+        status,
         user:userId
 
         
@@ -61,7 +62,7 @@ export const updateTaskStatus = async(taskId,userId,status)=>{
             status:status
         },
         {  new: true,
-            runValidators: true
+        runValidators: true
         }
     )
 
@@ -95,4 +96,34 @@ export const searchTask = async(userId,search)=>{
         }
     });
     return task
+}
+
+export const getTaskStatus = async(userId)=>{
+
+    const totalTask = await taskModel.countDocuments({
+        user:userId
+    })
+
+    const completedTask = await taskModel.countDocuments({
+        user:userId,
+        status:"completed"
+    })
+
+    const inProgressTasks = await taskModel.countDocuments({
+        user:userId,
+        status:"in-progress"
+    })
+
+    const todoTasks = await taskModel.countDocuments({
+        user:userId,
+        status:"todo"
+    })
+
+
+    return{
+        totalTask,
+        completedTask,
+        inProgressTasks,
+        todoTasks
+    }
 }
